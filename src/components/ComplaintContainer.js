@@ -1,10 +1,13 @@
-import { useEffect,useState,Link } from "react";
+import { useEffect,useState } from "react";
 import ComplaintDetails from "./ComplaintDetails";
+import { Link } from "react-router-dom";
 
 const ComplaintContainer= ()=> {
 
   const [complaints, setComplaints] = useState([]);
 
+    
+  useEffect(() => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     
@@ -18,15 +21,13 @@ const ComplaintContainer= ()=> {
       body: raw,
       redirect: 'follow'
     };
-    
 
 
 
-  useEffect(() => {
     fetch("http://live.jfsl.in/QCMAAPI/api/API/QCMAComplainReport", requestOptions)
     .then(response => response.json())
     .then(data => {
-      //console.log(data);
+      console.log(data);
       setComplaints(data);
     
     }
@@ -34,19 +35,23 @@ const ComplaintContainer= ()=> {
     .catch(error => console.log('error', error))
   }, []);
 
-  if (!complaints) return null;
-
-  return (
-    
-     <div className="flex flex-wrap">
-      {complaints.QCMAComplainReportDetailsList.map((complaint) => (
-         <Link key={complaint.ID} to={"/view-complaints=" + complaint.ID}>
-          <ComplaintDetails info={complaint} />
-         </Link>
-       ))}
-    </div> 
   
-  );
+  return !complaints ? (
+    null
+    ) : (
+    
+         <div className="flex flex-wrap">
+          {complaints.QCMAComplainReportDetailsList && complaints.QCMAComplainReportDetailsList.map((complaint) => (
+  <Link key={complaint.ID} to={"/view-complaints=" + complaint.ID}>
+    <ComplaintDetails info={complaint} />
+  </Link>
+))}
+        </div> 
+    
+      );
 };
 
 export default ComplaintContainer;
+
+
+
