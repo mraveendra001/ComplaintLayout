@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Sidenav = () => {
   return (
-    <div className="w-60 h-screen bg-gray-900 text-white">
+    <div className="w-60 max-h-max bg-gray-900 text-white">
       {/* <h2 className="text-lg font-bold text-white uppercase p-4">My Navigation Bar</h2> */}
       <ul className="list-none p-0">
       <Link to="/view-complaints">

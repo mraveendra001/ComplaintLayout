@@ -3,6 +3,7 @@ import Sidenav from "./Sidenav";
 import Footer from "./Footer";
 //import ComplaintDetails from "./ComplaintDetails";
 import ComplaintContainer from "./ComplaintContainer";
+//import Search from "./Search";
 //import User from "./User";
 const ViewComplaint = () => {
     
@@ -14,11 +15,11 @@ return (
             <Sidenav/>
             <ComplaintContainer/>
             {/* <User/> */}
+            {/* <Search /> */}
         </div>
         
-        <div>
         <Footer/>
-        </div>
+      
        
     </div>
     );
