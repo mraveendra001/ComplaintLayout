@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import Footer from "./Footer";
 
 
 const Login = () => {
@@ -48,7 +49,7 @@ const Login = () => {
    sessionStorage.setItem('userrole',roleName);
    sessionStorage.setItem('useremail',Email);
    sessionStorage.setItem('displayname',DisplayName)
-    navigate('/Dashboard', { state: { username, roleName } });
+   navigate('/Dashboard', { state: { username, roleName } });
    
   } else {
     setError("Invalid username or password");
@@ -60,6 +61,11 @@ const Login = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
+       <img
+          className="w-72 h-20 absolute top-0 left-0 m-6"
+          alt="jyothylabs logo"
+          src="https://www.jyothylabs.com/wp-content/themes/twentynineteen-child/images/logo.png"
+        />
       <h1 className="text-3xl font-bold mb-8">Login</h1>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -98,7 +104,7 @@ const Login = () => {
           Login
         </button>
       </form>
-      
+      <Footer/>
     </div>
     
   );

@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-
+import { CSVLink } from "react-csv";
 import filterIcon from './images/filter_icon3.png';
-//import { useLocation } from "react-router-dom";
-//import ReactPaginate from "react-paginate";
+import clearIcon from './images/clear_icon.png';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import 'react-date-range/dist/styles.css'; // Import the styles
+import 'react-date-range/dist/theme/default.css';
 
 const ComplaintContainer = () => {
   const [complaints, setComplaints] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
- // const location = useLocation();
-  //const username = location.state?.username || '';
-  //const [currentPage, setCurrentPage] = useState(1);
-  //const [rowsPerPage, setRowsPerPage] = useState(10);
-  // let ROWS_PER_PAGE = 25;
-  
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     var myHeaders = new Headers();
@@ -45,8 +46,25 @@ const ComplaintContainer = () => {
   // const handlePageChange = (pageNumber) => {
   //   setCurrentPage(pageNumber);
   // };
-  
-  
+  const handleFilterByDateRange = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleFromDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleToDateChange = (date) => {
+    setEndDate(date);
+  };
+
+  const handleClearFilter = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setShowDatePicker(false);
+    setSearchQuery("");
+  };
+
   const downloadImage = (url, filename) => {
     fetch(url)
       .then((response) => response.blob())
@@ -68,32 +86,89 @@ const ComplaintContainer = () => {
         (complaint.Result && complaint.Result.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
         (complaint.ProductName && complaint.ProductName.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
         (complaint.Brand && complaint.Brand.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (complaint.Brand && complaint.RetailerName.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
         (complaint.CreatedDate && complaint.CreatedDate.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
         (complaint.FrontProductImageFileName && complaint.FrontProductImageFileName.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
         (complaint.BackProductImageFileName && complaint.BackProductImageFileName.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (complaint.OtherProductImageFileName && complaint.OtherProductImageFileName.toString().toLowerCase().includes(searchQuery.toLowerCase()))
-    )
+        (complaint.OtherProductImageFileName && complaint.OtherProductImageFileName.toString().toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (complaint.InvoiceMemoImageFileName && complaint.InvoiceMemoImageFileName.toString().toLowerCase().includes(searchQuery.toLowerCase()))
+        )
   : [];
 
 console.log(complaints);
+const csvData = [
+  ["ID", "Product Name", "Brand", "Retailer Name", "Manufacturer Name", "Product Quantity", "Product Area", "Front Image", "Back Image", "Other Image", "InvoiceMemo Image", "Complain Date", "Invoice Reason"],
+  ...filteredComplaints.map(complaint => [
+    complaint.ID,
+    complaint.ProductName,
+    complaint.Brand,
+    complaint.RetailerName,
+    complaint.ManufacturerName,
+    complaint.ProdcutQuantity,
+    complaint.ProductArea,
+    complaint.FrontProductImageFileName,
+    complaint.BackProductImageFileName,
+    complaint.OtherProductImageFileName,
+    complaint.InvoiceMemoImageFileName,
+    formatDate(complaint.CreatedDate),
+    complaint.InvoiceReson
+  ])
+];
 
-// const startIndex = (currentPage - 1) * rowsPerPage;
-//   const endIndex = startIndex + rowsPerPage;
 
-//   const slicedComplaints = filteredComplaints.slice(startIndex, endIndex);
+ 
 
- const filterByDateRange = () => {
+
+   function formatDate(dateString) {
+    const date = new Date(dateString);
     
-   }
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = String(date.getFullYear());
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+    
+    return formattedDate;
+  }
     
 
   return (
    
     <div  className="flex flex-wrap border border-slate-950 rounded-lg p-4 max-w-full overflow-x-auto">
 <div className="text-gray-600 flex items-center">
-  <button className="bg-slate-300 hover:bg-slate-400 rounded-full px-4 py-2">
-    <img onClick={() => filterByDateRange()} className="w-7 h-7" src={filterIcon} alt="filter icon" />
-  </button>
+<button
+          className="bg-slate-300 hover:bg-slate-400 rounded-full px-4 py-2"
+          onClick={handleFilterByDateRange}
+        >
+          <img className="w-7 h-7" src={filterIcon} alt="filter icon" />
+        </button>  
+         {/* Render the date picker */}
+         {showDatePicker && (
+          <div className="ml-4">
+            <div className="flex">
+              <DatePicker
+                selected={startDate}
+                onChange={handleFromDateChange}
+                className="bg-white rounded-full border border-gray-300 px-4 py-2 mr-2"
+                placeholderText="From Date"
+                dateFormat="dd/MM/yyyy"
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={handleToDateChange}
+                className="bg-white rounded-full border border-gray-300 px-4 py-2"
+                placeholderText="To Date"
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
+          </div>
+        )}
+         
+         
   <input
     type="search"
     name="search"
@@ -102,33 +177,46 @@ console.log(complaints);
     value={searchQuery}
     onChange={handleSearchInputChange}
   />
-  <button type="submit" className="absolute right-0 top-0 mt-3 mr-4 py-2">
-    <svg
-      className="h-4 w-4 fill-current"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-    >
-      <path
-        d="M15.32 13.856a8.22 8.22 0 10-1.473 1.473l4.707 4.707a1 1 0 001.414-1.414l-4.707-4.707zM2 8.219a6.219 6.219 0 1112.438 0A6.219 6.219 0 012 8.219z"
-      />
-    </svg>
-  </button>
+      <>
+  {filteredComplaints.length > 0 && (
+          <CSVLink data={csvData} filename="complaints.csv">
+            <button className="bg-slate-300 hover:bg-slate-400 rounded-full px-4 py-2 ml-4">
+              Extract
+            </button>
+          </CSVLink>
+        )}
+
+        <button
+              className="bg-slate-300 hover:bg-slate-400 rounded-full px-4 py-2 ml-4"
+              onClick={handleClearFilter}
+           
+              >
+                <img className="w-7 h-7" src={clearIcon} alt="clear icon" />
+              </button>
+            </>
 </div>
 
 
 
 {filteredComplaints.length > 0 && (
+  
         <table className="w-full mt-6">
           <thead>
             <tr className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
               <th className="py-3 px-4 text-left" style={{ width: "5%" }}>ID</th>
-              <th className="py-3 px-4 text-left" style={{ width: "5%" }}>Results</th>
-              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Product Name</th>
-              <th className="py-3 px-2 text-left" style={{ width: "10%" }}>Brand</th>
-              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Front_Product Image</th>
-              <th className="py-3 px-4 text-left" style={{ width: "15%" }}>Back_Product Image</th>
-              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Other_Product Image</th>
+              
+              <th className="py-3 px-4 text-left" style={{ width: "9%" }}>Product Name</th>
+              <th className="py-3 px-2 text-left" style={{ width: "5%" }}>Brand</th>
+              <th className="py-3 px-2 text-left" style={{ width: "10%" }}>Retailer Name</th>
+              <th className="py-3 px-2 text-left" style={{ width: "10%" }}>Manufacturer Name</th>
+              <th className="py-3 px-2 text-left" style={{ width: "5%" }}>Product Quantity</th>
+              <th className="py-3 px-2 text-left" style={{ width: "8%" }}>Product Area</th>
+              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Front Image</th>
+              <th className="py-3 px-4 text-left" style={{ width: "12%" }}>Back  Image</th>
+              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Other Image</th>
+              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>InvoiceMemo Image</th>
               <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Complain Date</th>
+              <th className="py-3 px-4 text-left" style={{ width: "10%" }}>Invoice Reason</th>
 </tr>
 </thead>
 <tbody className="text-gray-600 text-sm font-light">
@@ -138,11 +226,13 @@ console.log(complaints);
 <td className="py-3 px-4 text-left whitespace-nowrap">
 {complaint.ID}
 </td>
-<td className="py-3 px-4 text-left">
-{complaint.Result}
-</td>
+
 <td className="py-3 px-4 text-left">{complaint.ProductName}</td>
 <td className="py-3 px-4 text-left">{complaint.Brand}</td>
+<td className="py-3 px-4 text-left">{complaint.RetailerName}</td>
+<td className="py-3 px-4 text-left">{complaint.ManufacturerName}</td>
+<td className="py-3 px-4 text-left">{complaint.ProdcutQuantity}</td>
+<td className="py-3 px-4 text-left">{complaint.ProductArea}</td>
 <td className="py-3 w-18 text-left">
         <img  className="h-24 w-24" download
         onClick={() => downloadImage(complaint.FrontProductImageFileName, 'image.jpg')} src={complaint.FrontProductImageFileName} alt="Complaint" />
@@ -158,50 +248,30 @@ console.log(complaints);
         onClick={() => downloadImage(complaint.OtherProductImageFileName, 'image.jpg')} src={complaint.OtherProductImageFileName} alt="Complaint" />
                
 </td>
+<td className="py-3 w-18 text-left">
+        <img  className="h-24 w-24" download
+        onClick={() => downloadImage(`http://115.113.224.139/QualityImageFTP/${complaint.InvoiceMemoImageFileName}`, 'image.jpg')}
+        src={`http://115.113.224.139/QualityImageFTP/${complaint.InvoiceMemoImageFileName}`}
+        alt="Complaint" />
+               
+</td>
 
-<td className="py-3 px-4 text-left">{complaint.CreatedDate}</td>
-
+<td className="py-3 px-4 text-left">
+  {formatDate(complaint.CreatedDate)}
+</td>
+<td className="py-3 px-4 text-left">{complaint.InvoiceReson}</td>
 </tr>
 ))}
 </tbody>
 </table>
+ 
+
 )}
    {filteredComplaints.length === 0 && (
         <p className="text-center mt-6">No complaints found.</p>
       )}
   
-  {/* <div className="m-6 px-[200px] pt-6 pb-6">
-        <ReactPaginate
-          activePage={currentPage}
-          itemsCountPerPage={rowsPerPage}
-          totalItemsCount={filteredComplaints.length}
-          pageRangeDisplayed={5}
-          onChange={handlePageChange}
-          itemClass="bg-white text-gray-600 hover:text-gray-700 rounded-full px-4 py-2 mx-1 focus:outline-none"
-          activeClass="bg-slate-300 text-white"
-          prevPageText="Previous"
-          nextPageText="Next"
-          disabledClass="bg-gray-300"
-          pageCount={Math.ceil(filteredComplaints.length / rowsPerPage)}
-        />
 
-        {/* <div className="m-4">
-          <span className="mr-2">Rows per page:</span>
-          <select
-            className="border rounded-md px-2 py-1"
-            value={rowsPerPage}
-            onChange={(event) => {
-              setCurrentPage(1);
-              setRowsPerPage(Number(event.target.value));
-            }}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </div> 
-      {/* </div> */} 
 
     </div>
   );
