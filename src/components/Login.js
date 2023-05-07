@@ -40,33 +40,21 @@ const Login = () => {
   const qcmaUserLoginDetailsList = responseData.QCMAUserLoginDetailsList; // extract the QCMAUserLoginDetailsList array
   if (qcmaUserLoginDetailsList && qcmaUserLoginDetailsList.length > 0) { // check if the array exists and has at least one item
     const roleName = qcmaUserLoginDetailsList[0].RoleName; // extract the value of the RoleName property from the first item in the array
-   // alert(roleName);
+   
+    const DisplayName = qcmaUserLoginDetailsList[0].DisplayName;
+    const Email = qcmaUserLoginDetailsList[0].Email;
+    alert(DisplayName);
+ sessionStorage.setItem('username',username);
+   sessionStorage.setItem('userrole',roleName);
+   sessionStorage.setItem('useremail',Email);
+   sessionStorage.setItem('displayname',DisplayName)
     navigate('/Dashboard', { state: { username, roleName } });
-    //navigate('/dashboard', {username: {username}, roleName: {roleName}})
-    //navigate('/Dashboard', {username: username, roleName: roleName})
+   
   } else {
     setError("Invalid username or password");
   }
 });
  
-
-    // fetchData((responseData) => {
-     
-    //   if (responseData && responseData.QCMAUserLoginDetailsList && responseData.QCMAUserLoginDetailsList.length > 0) {
-    //     const user = responseData.QCMAUserLoginDetailsList[0];
-    //     const { UserName, RoleName } = user;
-    //     navigate('/Dashboard', { state: { username: UserName, roleName: RoleName } });
-    //   } else {
-    //     setError("Invalid username or password");
-     // }
-    
-    // if (data.QCMAUserLoginDetailsList.length > 0) {
-    //     console.log(data.QCMAUserLoginDetailsList)
-    //     navigate('/Dashboard', { username });
-    // } else {
-    //   setError("Invalid username or password");
-    // }
-
  
  };
 

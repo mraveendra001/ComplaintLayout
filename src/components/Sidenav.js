@@ -9,7 +9,9 @@ const Sidenav = () => {
       <Link to="/view-complaints">
         <li className="px-4 py-6 hover:bg-gray-700 font-bold">VIEW COMPLAINTS</li>
         </Link>
+        <Link to="/view-reports">
         <li className="px-4 py-6 hover:bg-gray-700 font-bold">VIEW REPORTS</li>
+        </Link>
         <li className="px-4 py-6 hover:bg-gray-700 font-bold">VIEW SOMETHING</li>
         <li className="px-4 py-6 hover:bg-gray-700 font-bold">View SOMETHING</li>
         <li className="px-4 py-6 hover:bg-gray-700 font-bold">View SOMETHING</li>

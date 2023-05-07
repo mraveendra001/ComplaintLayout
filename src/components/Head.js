@@ -1,6 +1,10 @@
 import React from "react";
 
 const Head = () => {
+  
+    // const username = sessionStorage.getItem('DisplayName');
+    const username=sessionStorage.getItem('displayname')
+    const roleName1 = sessionStorage.getItem('userrole');
   return (
     <div>
       <header className="flex justify-between items-center bg-gray-100 p-6">
@@ -10,14 +14,8 @@ const Head = () => {
           src="https://www.jyothylabs.com/wp-content/themes/twentynineteen-child/images/logo.png"
         />
         <nav className="mr-16">
-          <ul className="flex text-lg font- space-x-8">
-            <li>About Us</li>
-            <li>Our Brands</li>
-            <li>Our Approach</li>
-            <li>Investor</li>
-            <li>Careers</li>
-            <li>Contact</li>
-          </ul>
+         <h1>Hi, {username}</h1>
+            <p>Your role is {roleName1}.</p> 
         </nav>
       </header>
     </div>
