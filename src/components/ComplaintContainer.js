@@ -169,14 +169,14 @@ const csvData = [
         )}
          
          
-  <input
-    type="search"
-    name="search"
-    placeholder="Search"
-    className="bg-white w-60 sm:w-80 md:w-96 h-12 px-5 pr-10 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 ml-6"
-    value={searchQuery}
-    onChange={handleSearchInputChange}
-  />
+         <input
+  type="search"
+  name="search"
+  placeholder="Search"
+  className="bg-white w-60 sm:w-80 md:w-96 h-12 px-5 pr-10 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 ml-6 focus:border-slate-300 border border-gray-300"
+  value={searchQuery}
+  onChange={handleSearchInputChange}
+/>
       <>
   {filteredComplaints.length > 0 && (
           <CSVLink data={csvData} filename="complaints.csv">

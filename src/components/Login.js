@@ -44,7 +44,7 @@ const Login = () => {
    
     const DisplayName = qcmaUserLoginDetailsList[0].DisplayName;
     const Email = qcmaUserLoginDetailsList[0].Email;
-    alert(DisplayName);
+    //alert(DisplayName);
  sessionStorage.setItem('username',username);
    sessionStorage.setItem('userrole',roleName);
    sessionStorage.setItem('useremail',Email);
@@ -72,6 +72,9 @@ const Login = () => {
           {error}
         </div>
       )}
+
+      {/* <div className="border border-slate-300 p-10">  */}
+
       <form className="w-full max-w-sm" onSubmit={handleLogin}>
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="username">
@@ -79,7 +82,7 @@ const Login = () => {
           </label>
           <input
             type="text"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="h-12 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -91,7 +94,7 @@ const Login = () => {
           </label>
           <input
             type="password"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="h-12 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -104,6 +107,8 @@ const Login = () => {
           Login
         </button>
       </form>
+      {/* </div> */}
+  
       <Footer/>
     </div>
     
